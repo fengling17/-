@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    #app {
+        position: relative;
+    }
+
+    .bd {
+        border: 1px solid #ccc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        position: absolute;
+        top: 100px;
+        left: 300px;
+        cursor: pointer;
+    }
+
+    .cent {
+        width: 30px;
+        height: 30px;
+        margin: 5px;
+    }
+
+    .c1 {
+        background: #90cfb0;
+    }
+
+    .c2 {
+        background: #00ff00;
+    }
+
+    .c3 {
+        background: #ff0000;
+    }
+
+    .workspace {
+        width: 270px;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: absolute;
+        top: 130px;
+
+    }
+
+    .worksection {
+        height: 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .areainp {
+        width: 100px;
+    }
+
+    .coordinate {
+        width: 100px;
+    }
+</style>
+
+<body>
+    <div id="app">
+        <h4>解题思路：二维转一维，数据驱动<br><br>
+            一开始想着输入坐标扫雷太麻烦了，就偏向往传统扫雷开发，<br>
+            等做完了，准备加上坐标扫雷，结果发现跑题了。<br>
+            数据结构不一样，重启一个<br>
+        </h4>
+        <div class="workspace">
+            <div class="worksection">
+                <div>游戏区域：X.Y坐标轴块数,以"."分割</div>
+                <input type="number" v-model="inp" class="areainp">
+                <button @click="start">开始鼠标扫雷</button>
+            </div>
+            <div class="worksection">
+                <div>X.Y坐标,以"."分割</div>
+                <input type="number" class="coordinate">
+                <button @click="start">开始坐标扫雷</button>
+            </div>
+        </div>
+        <div class="bd" :style="{width: int.split('.')[0]*40+'px'}">
+            <div class="cent" :class="rendering[i]" @click="dismantle($event)" v-for="i in area" :key="i" :zoom="i">
+            </div>
+        </div>
+    </div>
+</body>
+<script src="./vue.js"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            area: [],//游戏区域
+            bombs: [],//炸弹仓库
+            bomb: -1,//爆炸的炸弹
+            zone: [],//安全区
+            flag: true,//游戏开关
+            inp: '10.10',//游戏区域大小
+            int: '10.10'//inp的中转变量
+        },
+        methods: {
+            start() {
+                this.int = this.inp
+                let inpn = this.inp.split('.')[0] * this.inp.split('.')[1];
+                this.area = [...Array(inpn).keys()]
+                console.log(inpn);
+                if (!this.flag) {
+                    this.flag = true;
+                    this.bomb = -1;
+                    this.zone = [];
+                }
+                if (inpn !== 100 && inpn > 0) {
+                    this.area = [...Array(inpn).keys()]
+                } else if (inpn === 100) {
+                    this.area = [...Array(100).keys()];
+                } else {
+                    alert('请输入有效数字！');
+                }
+                const num = Math.floor(Math.random() * this.area.length);
+                const box = new Set();
+                while (box.size < num) {
+                    const nv = Math.floor(Math.random() * this.area.length);
+                    box.add(nv);
+                }
+                this.bombs = [...box];
+                console.log(this.bombs);
+
+            },
+            dismantle(e) {
+                if (this.flag) {
+                    let temp = Number(e.target.getAttribute('zoom'));
+                    if (this.bombs.includes(temp)) {
+                        this.bomb = temp;
+                        alert('爆炸了！');
+                        this.flag = false;
+                    } else {
+                        this.zone.push(temp);
+                        console.log(this.zone);
+                    }
+                    if (this.zone.length === this.area.length - this.bombs.length) {
+                        this.flag = false;
+                        alert('你赢了！');
+                    }
+                } else {
+                    alert('点击开始鼠标扫雷');
+                }
+            }
+        },
+        computed: {
+            rendering() {
+                return this.area.map(num => {
+                    if (this.bomb === num) {
+                        return 'c3';
+                    } else if (this.zone.includes(num)) {
+                        return 'c2';
+                    } else {
+                        return 'c1';
+                        console.log(num);
+                    }
+                })
+            }
+        },
+        created() {
+            let inpn = this.inp.split('.')[0] * this.inp.split('.')[1];
+            console.log(inpn);
+            this.area = [...Array(inpn).keys()]
+        }
+    })
+    alert('默认启动游戏，区域大小为10x10');
+</script>
+
+</html>
