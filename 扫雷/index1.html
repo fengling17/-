@@ -124,7 +124,7 @@
                 } else {
                     alert('请输入有效数字！');
                 }
-                const num = Math.floor(Math.random() * this.area.length);
+                const num = Math.floor(Math.random() * this.area.length + 1);
                 const box = new Set();
                 while (box.size < num) {
                     const nv = Math.floor(Math.random() * this.area.length);
@@ -139,7 +139,7 @@
                     let temp = Number(e.target.getAttribute('zoom'));
                     if (this.bombs.includes(temp)) {
                         this.bomb = temp;
-                        alert('爆炸了！');
+                        alert('Game over!');
                         this.flag = false;
                     } else {
                         this.zone.push(temp);
@@ -147,7 +147,7 @@
                     }
                     if (this.zone.length === this.area.length - this.bombs.length) {
                         this.flag = false;
-                        alert('你赢了！');
+                        alert('Congratulation! You win!');
                     }
                 } else {
                     alert('点击开始鼠标扫雷');

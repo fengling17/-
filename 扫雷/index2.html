@@ -34,7 +34,6 @@
             </div>
         </div>
     </div>
-
 </body>
 <script src="./vue.js"></script>
 <script>
@@ -88,6 +87,7 @@
                     this.point = '';
                     this.safety = [];
                     this.bomb = '';
+                    this.bombs = [];
                     //以上数据初始化
                     this.flag = true;
                     this.gamesize = this.inpa;
@@ -112,10 +112,16 @@
                         this.bomb = this.point;
                         this.flag = false;
                         alert('Game Over!')
-                    } else if (this.safety.length === this.area.length - this.bombs.length) {
-                        alert('Congratulations! You win!')
                     } else {
                         this.safety.push(this.point)
+                        console.log(this.safety.length);
+                        console.log(this.area.length - this.bombs.length);
+                        console.log(this.area.length * this.area.length);
+
+                        if (this.safety.length === this.area.length * this.area.length - this.bombs.length) {
+                            this.flag = false;
+                            alert('Congratulations! You win!')
+                        }
                     }
                 } else {
                     alert('游戏暂未开始或已结束，请点击开始游戏，开放此按钮')
