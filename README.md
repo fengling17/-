@@ -35,4 +35,12 @@
     //    1、flag:true =>禁止开始按钮 || flag:false => 禁用扫雷按钮
     //    2、输入框限制输入格式:输入框数据的两个正则、inpb重复输入限制(以上两点没做，增加代码可读性)
 # 演示视频
-    
+- 坐标扫雷
+https://github.com/user-attachments/assets/bb5d5575-bd29-427e-9fb8-d45850ea9395
+
+- 鼠标扫雷
+https://github.com/user-attachments/assets/fa179850-6a95-4d2c-bd8f-12ccdac37ff6
+
+
+
+
