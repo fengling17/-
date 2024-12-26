@@ -99,7 +99,7 @@
                         this.bombs.push(x + '.' + y)
                     }
                     this.bombs = [...new Set(this.bombs)];
-                    // console.log(this.bombs);显示雷区
+                    console.log(this.bombs); //显示雷区
                 } else {
                     alert('请勿重复开始游戏')
                 }
@@ -111,6 +111,9 @@
                     if (this.bombs.includes(this.point)) {
                         this.bomb = this.point;
                         this.flag = false;
+                        alert('Game Over!')
+                    } else if (this.safety.length === this.area.length - this.bombs.length) {
+                        alert('Congratulations! You win!')
                     } else {
                         this.safety.push(this.point)
                     }
