@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./index2.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="left">
+            <div class="title">解题思路:用Vue实现数据驱动</div>
+            <div class="gamebox">
+                <div style="font-size: 14px;">输入提示：默认值为10.10，以 '.' 分隔，左边为横坐标，右边为纵坐标。</div>
+                <div class="gameboxcent">
+                    <input type="text" class="ipt" v-model="inpa">
+                    <button @click="start()">开始游戏</button>
+                </div>
+                <div class="gameboxcent">
+                    <input type="text" class="ipt" v-model="inpb">
+                    <button @click="detect()">点击扫雷</button>
+                </div>
+                <div class="describe">
+                    1、两个输入框数据的正则<br>2、扫雷框重复输入限制<br>以上两点没做，增加代码可读性</div>
+            </div>
+        </div>
+        <div class="right">
+            <div class="gamearea">
+                <div class="xline" v-for="(i,r) in area" :key="r">
+                    <div class="cent c1" :class="rendering(r+'.'+j)" v-for="j in i" :key="r+'.'+j"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="./vue.js"></script>
+<script>
+    //构建思路：
+    //一、点击开始游戏按钮，获取游戏区域大小，并初始化游戏区域
+
+    //    1、给开始按钮绑定点击事件，将inpa赋值给gamesize
+    //    2、监听gamesize变化，对其数据处理生成坐标点集合area
+    //    3、通过area数据渲染游戏区域
+    //    4、以小于area20%的量生成地雷集合bombs，设置安全区safety
+    //    5、给每个cent节点添加动态样式，以计算属性监听每个坐标 (bomb=>c3,safety=>c2,else=>c1)
+
+
+    //二、点击扫雷按钮，获取扫雷点坐标，并判断是否安全，并渲染结果
+
+    //    1、给开始按钮绑定点击事件，对输入数据X、Y各减 1 后赋值给point
+    //    2、判断point是否在bombs集合中。
+    //          如果在,则bomb被赋值，触发计算属性，cent样式变为c3
+    //          如果不在，则point被添加到safety中。触发计算属性，cent样式变为c2
+
+
+    //三、游戏结束，游戏重开
+
+    //    1、游戏结束条件：bomb有值=>success || safety.length === area.length - bombs.length => fail
+    //    2、游戏重开：给开始按钮的点击事件继续丰富，data初始化
+
+
+    //四、宏观处理、流程优化、细节丰富
+
+    //    1、flag:true =>禁止开始按钮 || flag:false => 禁用扫雷按钮
+    //    2、输入框限制输入格式:输入框数据的两个正则、inpb重复输入限制
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                flag: false,//游戏开始标志
+                inpa: '10.10',//添加中间变量，避免双向绑定直接改变
+                inpb: '',
+                gamesize: '',//游戏区域大小
+                point: '',//扫雷点坐标
+                area: [],//所有坐标点的集合
+                safety: [],//安全点集合
+                bombs: [],//雷区集合
+                bomb: ''//爆炸点坐标
+            }
+        },
+        methods: {
+            start() {
+                if (!this.flag) {
+                    this.inpb = '';
+                    this.point = '';
+                    this.safety = [];
+                    this.bomb = '';
+                    this.bombs = [];
+                    //以上数据初始化
+                    this.flag = true;
+                    this.gamesize = this.inpa;
+                    let arr = this.gamesize.split('.')
+                    let num = Number(arr[0]) * Number(arr[1]) * 0.2
+                    for (let i = 0; i < num; i++) {
+                        let x = Math.floor(Math.random() * Number(arr[0]));
+                        let y = Math.floor(Math.random() * Number(arr[1]));
+                        this.bombs.push(x + '.' + y)
+                    }
+                    this.bombs = [...new Set(this.bombs)];
+                    console.log(this.bombs); //显示雷区
+                } else {
+                    alert('请勿重复开始游戏')
+                }
+            },
+            detect() {
+                if (this.flag) {
+                    let arr = this.inpb.split('.')
+                    this.point = Number(arr[0]) - 1 + '.' + (Number(arr[1]) - 1)
+                    if (this.bombs.includes(this.point)) {
+                        this.bomb = this.point;
+                        this.flag = false;
+                        alert('Game Over!')
+                    } else {
+                        this.safety.push(this.point)
+                        console.log(this.safety.length);
+                        console.log(this.area.length - this.bombs.length);
+                        console.log(this.area.length * this.area.length);
+
+                        if (this.safety.length === this.area.length * this.area.length - this.bombs.length) {
+                            this.flag = false;
+                            alert('Congratulations! You win!')
+                        }
+                    }
+                } else {
+                    alert('游戏暂未开始或已结束，请点击开始游戏，开放此按钮')
+                }
+            }
+        },
+        computed: {
+            rendering() {
+                return (coord) => {
+                    if (this.bomb === coord) {
+                        return 'c3';
+                    } else if (this.safety.includes(coord)) {
+                        return 'c2';
+                    } else {
+                        return 'c1';
+                    }
+                }
+            }
+        },
+        watch: {
+            gamesize(val) {
+                let arr = []
+                for (let i = 0; i < Number(val.split('.')[0]); i++) {
+                    let row = []
+                    for (let j = 0; j < Number(val.split('.')[1]); j++) {
+                        row.push(j)
+                    }
+                    arr.push(row)
+                }
+                this.area = arr
+            }
+        }
+    })
+</script>
+
+</html>
