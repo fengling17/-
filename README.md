@@ -36,10 +36,12 @@
     //    2、输入框限制输入格式:输入框数据的两个正则、inpb重复输入限制(以上两点没做，增加代码可读性)
 # 演示视频
 - 坐标扫雷
-https://github.com/user-attachments/assets/1bd0ab42-0d71-4660-9d1d-86fe67019d66
+https://github.com/user-attachments/assets/d126f1e3-ad1b-4daa-ad69-9dc02cba0e34
 
 - 鼠标扫雷
-https://github.com/user-attachments/assets/bb5d5575-bd29-427e-9fb8-d45850ea9395
+https://github.com/user-attachments/assets/db24d0f5-0c63-456c-8846-a97c76929e46
+
+
 
 
 
